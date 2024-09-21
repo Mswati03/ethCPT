@@ -7,73 +7,72 @@
     <link rel="stylesheet" href="">
     <style>
         body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
-.container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-h1 {
-    text-align: center;
-}
+        h1 {
+            text-align: center;
+        }
 
-form {
-    display: flex;
-    flex-direction: column;
-}
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-form div {
-    margin-bottom: 10px;
-}
+        form div {
+            margin-bottom: 10px;
+        }
 
-label {
-    margin-bottom: 5px;
-}
+        label {
+            margin-bottom: 5px;
+        }
 
-input {
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+        input {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-button {
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-button:hover {
-    background-color: #218838;
-}
+        button:hover {
+            background-color: #218838;
+        }
 
-#result {
-    margin-top: 20px;
-    font-size: 18px;
-    text-align: center;
-}
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Contract Negotiator DApp</h1>
+        <h1>Contract to Crypto DApp</h1>
         <form id="contractForm">
             <div>
-                <label for="description">Contract</label>
+                <label for="contractFile">Upload Contract</label>
                 <input type="file" id="contractFile" accept=".txt,.pdf" required />
             </div>
-            
             <button type="submit">Upload</button>
         </form>
         <p id="result"></p>
@@ -81,32 +80,35 @@ button:hover {
 
     <script>
         document.getElementById('contractForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    console.log("iuoi");
+            event.preventDefault();
 
-    const description = document.getElementById('description').value;
-    const priceUSD = document.getElementById('priceUSD').value;
-    
+            const fileInput = document.getElementById('contractFile');
+            const file = fileInput.files[0];
 
-    const response = await fetch('/negotiate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ description, priceUSD })
-    });
+            if (file) {
+                // Form data to send to the backend
+                const formData = new FormData();
+                formData.append('contractFile', file);
 
-    const result = await response.json();
-    if(result)
-    {
-        console.log("yebo")
-    document.getElementById('result').innerText = result.negotiatedPrice
-        ? `Negotiated Price: $${result.negotiatedPrice}`
-        : 'Failed to negotiate price';
-    }
-    else
-    {
-console.log("nah")
-    }
-});
+                // Send the file to the server
+                const response = await fetch('/negotiate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Display result message
+                //just to make it hard coded
+                if (result) {
+                    document.getElementById('result').innerText = 'Uploaded successfully!';
+                } else {
+                    document.getElementById('result').innerText = 'Failed to upload!';
+                }
+            } else {
+                document.getElementById('result').innerText = 'No file selected!';
+            }
+        });
     </script>
 </body>
 </html>
